@@ -1,0 +1,38 @@
+=Scripts for sycsvpro
+
+*sycsvpro* is a command line interface that can be used to analyze and operate
+on csv-files. If you have recurring tasks use *sycsvpro* for than you can
+use the *sycsvpro* classes in scripts.
+
+In the following the usage of different scripts are described.
+
+The resulting files can be used in a spread sheet like _Excel_ or 
+<em>LibreOffice Calc<em>.
+
+==Spare Parts Analysis
+To do an ABC analysis of equipments and users use #abc_analysis
+
+    sycsvpro execute machine_age.rb abc_analysis country.csv country
+
+To analyze equipment ages use #machine_age
+
+    sycsvpro execute machine_age.rb machine_age country.csv country
+
+To analyze top equipment usages with more than 50 equipments 
+use #machine_count_top
+
+    sycsvpro execute machine_age.rb machine_count_top machine-ages-country.csv
+    country 50
+
+Note: _machine-ages-country.csv_ is the result of #machine_age
+
+==RSC Analysis
+Create the analysis with #expired_rsc
+
+    sycsvpro execute expired_rsc.rb expired_rsc country.csv country
+
+==License
+The scripts are released under the {MIT License}[http://opensource.org/licenses/MIT]
+
+==Contact
+mailto:pierre@sugaryourcoffee.de

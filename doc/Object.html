@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class Object - RDoc Documentation</title>
+
+<link href="./fonts.css" rel="stylesheet">
+<link href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/navigation.js"></script>
+<script src="./js/search_index.js"></script>
+<script src="./js/search.js"></script>
+<script src="./js/searcher.js"></script>
+<script src="./js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link">BasicObject
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-i-abc_analysis">#abc_analysis</a>
+    
+    <li ><a href="#method-i-expired_rsc">#expired_rsc</a>
+    
+    <li ><a href="#method-i-machine_age">#machine_age</a>
+    
+    <li ><a href="#method-i-machine_count_top">#machine_count_top</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-Object">
+  <h1 id="class-Object" class="class">
+    class Object
+  </h1>
+
+  <section class="description">
+    
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-abc_analysis" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            sycsvpro execute machine_age.rb abc_analysis INFILE COUNTRY_NAME
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <p>Conducts a ABC analysis based on machine count</p>
+<dl class="rdoc-list note-list"><dt>INFILE
+<dd>
+<p>input csv-file sperated with colons (;) to operate on</p>
+</dd><dt>COUNTRY_NAME
+<dd>
+<p>country-identifier for the resulting files</p>
+</dd></dl>
+
+<p>Result of ABC analysis is in the file ‘ABC-analysis-COUNTRY_NAME.csv’. If
+no COUNTRY_NAME is given the result is in
+‘ABC-analysis-infile_base_name.csv’</p>
+          
+          
+
+          
+          <div class="method-source-code" id="abc_analysis-source">
+            <pre><span class="ruby-comment"># File machine_age.rb, line 13</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">abc_analysis</span>
+  <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
+  <span class="ruby-identifier">abc_filename</span> = <span class="ruby-node">&quot;ABC-analysis-#{others[0] || File.base_name(infile, '.*')}.csv&quot;</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Assigning machine count to customers...&quot;</span>
+
+  <span class="ruby-identifier">aggregator</span> = <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Aggregator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-identifier">infile</span>, 
+                                        <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;aggregate.csv&quot;</span>, 
+                                        <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;45&quot;</span>, 
+                                        <span class="ruby-identifier">sum</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;Total:1,Machines&quot;</span>)
+
+  <span class="ruby-identifier">aggregator</span>.<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Sort customers based on machine count descending...&quot;</span>
+
+  <span class="ruby-identifier">sorter</span> = <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Sorter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-string">&quot;aggregate.csv&quot;</span>,
+                                <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;sort.csv&quot;</span>,
+                                <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;n:1&quot;</span>,
+                                <span class="ruby-identifier">df</span><span class="ruby-operator">:</span>      <span class="ruby-string">&quot;%Y-%m-%d&quot;</span>,
+                                <span class="ruby-identifier">desc</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;d&quot;</span>)
+  
+  <span class="ruby-identifier">sorter</span>.<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Categorize customers in regard to machine count...&quot;</span>
+
+  <span class="ruby-identifier">counter</span> = <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Counter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;sort.csv&quot;</span>,
+                                  <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;count.csv&quot;</span>,
+                                  <span class="ruby-identifier">rows</span><span class="ruby-operator">:</span>    <span class="ruby-node">&quot;1-#{result.row_count}&quot;</span>,
+                                  <span class="ruby-identifier">key</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;0:customer,1:machines&quot;</span>,
+                                  <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;1:&lt;10,1:10-50,1:&gt;50&quot;</span>,
+                                  <span class="ruby-identifier">sort</span><span class="ruby-operator">:</span>    <span class="ruby-keyword">false</span>)
+
+  <span class="ruby-identifier">counter</span>.<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Conducting ABC-analysis...&quot;</span>
+
+  <span class="ruby-identifier">calculator</span> = <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Calculator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;count.csv&quot;</span>,
+                                    <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">abc_filename</span>,
+                                    <span class="ruby-identifier">header</span><span class="ruby-operator">:</span>  <span class="ruby-string">&quot;*,A,B,C&quot;</span>,
+                                    <span class="ruby-identifier">rows</span><span class="ruby-operator">:</span>    <span class="ruby-node">&quot;2-#{result.row_count}&quot;</span>,
+                                    <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;5:A=c4*c1,6:B=c3*c1,7:C=c2*c1&quot;</span>,
+                                    <span class="ruby-identifier">sum</span><span class="ruby-operator">:</span>     <span class="ruby-keyword">true</span>)
+  
+  <span class="ruby-identifier">calculator</span>.<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">clean_up</span>([<span class="ruby-string">&quot;aggregate.csv&quot;</span>, <span class="ruby-string">&quot;sort.csv&quot;</span>, <span class="ruby-string">&quot;count.csv&quot;</span>])
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;You can find the result of the ABC Analysis in '#{abc_filename}'&quot;</span>
+
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-expired_rsc" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            sycsvpro execute expired_rsc.rb expired_rsc INFILE COUNTRY_NAME
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <p>Extract customers with RSCs and categorize regarding expiration date</p>
+<dl class="rdoc-list note-list"><dt>INFILE
+<dd>
+<p>input csv-file sperated with colons (;) to operate on</p>
+</dd><dt>COUNTRY_NAME
+<dd>
+<p>country-identifier for the resulting files</p>
+</dd></dl>
+
+<p>Expects the insert file ~/.syc/sycsvpro/scripts/active_expired_RSC.ins If
+<a href="active_expired_RSC_ins.html">active_expired_RSC.ins</a> is not
+available you can create it with</p>
+
+<pre>sycsvpro edit -s active_expired_RSC.ins</pre>
+
+<p>and add following content</p>
+
+<pre>;=b5;=c5;=d5;=e5
+;=sum(b3:b4);=sum(c3:c4);=sum(d3:d4);=sum(e3:e4)
+active;=sum(c4:e4);=sum(d4:e4);=e4
+expired;=b6;=c6;=d6;=e6</pre>
+
+<p>The result is in the file ‘country_name-ibase.csv’ if country_name is given
+otherwise the result is in infile_base_name-ibase.csv</p>
+          
+          
+
+          
+          <div class="method-source-code" id="expired_rsc-source">
+            <pre><span class="ruby-comment"># File expired_rsc.rb, line 25</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">expired_rsc</span>
+  <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
+
+  <span class="ruby-identifier">result_file_name</span> = <span class="ruby-node">&quot;#{others[0] || File.base_name(infile, '.*')}-ibase.csv&quot;</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Extracting RSCs and categorize regarding expiration&quot;</span>
+
+  <span class="ruby-identifier">df</span> = <span class="ruby-string">&quot;%d.%m.%Y&quot;</span>
+
+  <span class="ruby-identifier">timeleap</span>  = <span class="ruby-constant">SycTimeleap</span><span class="ruby-operator">::</span><span class="ruby-constant">TimeLeap</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-identifier">e2ya</span>      = <span class="ruby-node">&quot;&lt;#{timeleap.b2y.strftime(df)}&quot;</span>
+  <span class="ruby-identifier">e2ya1ya</span>   = <span class="ruby-node">&quot;#{timeleap.b2y.strftime(df)}-#{timeleap.b1y.strftime(df)}&quot;</span>
+  <span class="ruby-identifier">e1yatoday</span> = <span class="ruby-node">&quot;#{(timeleap.b1y + 1).strftime(df)}-#{timeleap.tod.strftime(df)}&quot;</span>
+  <span class="ruby-identifier">eatoday</span>   = <span class="ruby-node">&quot;&gt;#{timeleap.tod.strftime(df)}&quot;</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;#{e2ya} #{e2ya1ya} #{e1yatoday} #{eatoday}&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Counter</span>.<span class="ruby-identifier">new</span>(
+              <span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-identifier">infile</span>,
+              <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;country-ibase.csv&quot;</span>,
+              <span class="ruby-identifier">rows</span><span class="ruby-operator">:</span>    <span class="ruby-node">&quot;1-#{result.row_count}&quot;</span>,
+              <span class="ruby-identifier">key</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;45:Customer&quot;</span>,
+              <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-node">&quot;11:#{e2ya},11:#{e2ya1ya},11:#{e1yatoday},11:#{eatoday}&quot;</span>,
+              <span class="ruby-identifier">df</span><span class="ruby-operator">:</span>      <span class="ruby-string">&quot;%d.%m.%Y&quot;</span>,
+              <span class="ruby-identifier">sort</span><span class="ruby-operator">:</span>    <span class="ruby-keyword">false</span>,
+              <span class="ruby-identifier">sum</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;Total:1,Sum&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Sorting customers based on count of RSCs&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Sorter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-string">&quot;country-ibase.csv&quot;</span>,
+                       <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;country-ibase-sort.csv&quot;</span>,
+                       <span class="ruby-identifier">desc</span><span class="ruby-operator">:</span>    <span class="ruby-keyword">true</span>,
+                       <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;n:5&quot;</span>).<span class="ruby-identifier">execute</span>
+
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Inserting calculation scheme for expired RSC histogram&quot;</span>
+
+  <span class="ruby-identifier">insert_file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-string">&quot;~/.syc/sycsvpro/scripts/active_expired_RSC.ins&quot;</span>)
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Inserter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>   <span class="ruby-string">&quot;country-ibase-sort.csv&quot;</span>,
+                         <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span>  <span class="ruby-identifier">result_file_name</span>,
+                         <span class="ruby-identifier">insert</span><span class="ruby-operator">:</span>   <span class="ruby-identifier">insert_file</span>,
+                         <span class="ruby-identifier">position</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;top&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">clean_up</span>([<span class="ruby-string">&quot;country-ibase.csv&quot;</span>, <span class="ruby-string">&quot;country-ibase-sort.csv&quot;</span>])
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">puts</span> <span class="ruby-string">&quot;You can find the result of the expired RSC statistics in &quot;</span><span class="ruby-operator">+</span>
+             <span class="ruby-node">&quot;#{result_file_name}&quot;</span>
+
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-machine_age" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            sycsvpro execute machine_age.rb machine_age INFILE COUNTRY_NAME
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <p>Builds histogram data for machine count regarding machine ages</p>
+<dl class="rdoc-list note-list"><dt>INFILE
+<dd>
+<p>input csv-file sperated with colons (;) to operate on</p>
+</dd><dt>COUNTRY_NAME
+<dd>
+<p>country-identifier for the resulting files</p>
+</dd></dl>
+
+<p>Result of machine ages is in the file ‘machine-ages-COUNTRY_NAME.csv’. If
+no COUNTRY_NAME is given the result is in
+‘machine-ages-infile_base_name.csv’</p>
+          
+          
+
+          
+          <div class="method-source-code" id="machine_age-source">
+            <pre><span class="ruby-comment"># File machine_age.rb, line 74</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">machine_age</span>
+
+  <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
+  <span class="ruby-identifier">ages_filename</span> = <span class="ruby-node">&quot;machine-ages-#{others[0] || File.base_name(infile, '.*')}.csv&quot;</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Extracting date columns for #{infile}...&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Extractor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">infile</span>,
+                          <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;extract.csv&quot;</span>,
+                          <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;45,10-12,84&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Determine the machine ages based on the oldest date...&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Calculator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-string">&quot;extract.csv&quot;</span>,
+                           <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;calc.csv&quot;</span>,
+                           <span class="ruby-identifier">header</span><span class="ruby-operator">:</span>  <span class="ruby-string">&quot;*,Age&quot;</span>,
+                           <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;5:Age=[d1,d2,d3,d4].compact.min&quot;</span>,
+                           <span class="ruby-identifier">df</span><span class="ruby-operator">:</span>      <span class="ruby-string">&quot;%d.%m.%Y&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Create histogram for machine ages...&quot;</span>
+
+  <span class="ruby-identifier">timeleap</span> = <span class="ruby-constant">SycTimeleap</span><span class="ruby-operator">::</span><span class="ruby-constant">TimeLeap</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-identifier">o10y</span>   = <span class="ruby-node">&quot;&lt;#{timeleap.b10y}&quot;</span>
+  <span class="ruby-identifier">b10a7y</span> = <span class="ruby-node">&quot;#{timeleap.b10y}-#{timeleap.b7y}&quot;</span>
+  <span class="ruby-identifier">b7a2y</span>  =  <span class="ruby-node">&quot;#{timeleap.b7y+1}-#{timeleap.b2y}&quot;</span>
+  <span class="ruby-identifier">y2y</span>    = <span class="ruby-node">&quot;&gt;#{timeleap.b2y}&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Counter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-string">&quot;calc.csv&quot;</span>,
+                        <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;count.csv&quot;</span>,
+                        <span class="ruby-identifier">rows</span><span class="ruby-operator">:</span>    <span class="ruby-node">&quot;1-#{result.row_count}&quot;</span>,
+                        <span class="ruby-identifier">key</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;0:customer&quot;</span>,
+                        <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-node">&quot;5:#{o10y},5:#{b10a7y},5:#{b7a2y},5:#{y2y}&quot;</span>,
+                        <span class="ruby-identifier">df</span><span class="ruby-operator">:</span>      <span class="ruby-string">&quot;%Y-%m-%d&quot;</span>,
+                        <span class="ruby-identifier">sum</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;Total:1,Sum&quot;</span>,
+                        <span class="ruby-identifier">sort</span><span class="ruby-operator">:</span>    <span class="ruby-keyword">false</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Calculate count of machines older than 7 years per customer...&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Calculator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-string">&quot;count.csv&quot;</span>,
+                           <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;calc.csv&quot;</span>,
+                           <span class="ruby-identifier">header</span><span class="ruby-operator">:</span>  <span class="ruby-string">&quot;*,Older7Years&quot;</span>,
+                           <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;6:Older7Years=c1+c2&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Sorting customers based on machine count and age&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Sorter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;calc.csv&quot;</span>,
+                       <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">ages_filename</span>,
+                       <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;n:5,n:6&quot;</span>,
+                       <span class="ruby-identifier">start</span><span class="ruby-operator">:</span>   <span class="ruby-string">&quot;1&quot;</span>,
+                       <span class="ruby-identifier">desc</span><span class="ruby-operator">:</span>    <span class="ruby-keyword">true</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">clean_up</span>([<span class="ruby-string">&quot;extract.csv&quot;</span>, <span class="ruby-string">&quot;calc.csv&quot;</span>, <span class="ruby-string">&quot;count.csv&quot;</span>])
+
+  <span class="ruby-identifier">puts</span>; 
+  <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;You can find the result of the histogram data in '#{ages_filename}'&quot;</span>
+
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-machine_count_top" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            sycsvpro execute machine_age.rb machine_count_top INFILE COUNTRY_NAME COUNT
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <p>Extracts the top customers based on machine count and age</p>
+<dl class="rdoc-list note-list"><dt>INFILE
+<dd>
+<p>input csv-file sperated with colons (;) to operate on Use the resulting
+file from <a href="Object.html#method-i-machine_age">machine_age</a> method
+invocation</p>
+</dd><dt>COUNTRY_NAME
+<dd>
+<p>country-identifier for the resulting files</p>
+</dd><dt>COUNT
+<dd>
+<p>select rows only with machine count &gt;= COUNT</p>
+</dd></dl>
+
+<p>Result is in the file ‘A-customers-NAME.csv’, 
+‘A-customers-count-COUNTRY_NAME.csv’ and
+‘A-customers-age-COUNTRY_NAME.csv’.  If no COUNTRY_NAME is given the result
+is in  ‘A-customers-xxx-infile_base_name.csv’</p>
+          
+          
+
+          
+          <div class="method-source-code" id="machine_count_top-source">
+            <pre><span class="ruby-comment"># File machine_age.rb, line 146</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">machine_count_top</span>
+  <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
+  <span class="ruby-identifier">a_filename</span> = <span class="ruby-node">&quot;A-customers-#{others[0] || File.base_name(infile, '.*')}.csv&quot;</span>
+  <span class="ruby-identifier">count_filename</span> = <span class="ruby-node">&quot;A-customers-count-#{others[0] || File.base_name(infile, '.*')}.csv&quot;</span>
+  <span class="ruby-identifier">age_filename</span> = <span class="ruby-node">&quot;A-customers-age-#{others[0] || File.base_name(infile, '.*')}.csv&quot;</span>
+  <span class="ruby-identifier">count</span> = <span class="ruby-identifier">others</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">||</span> <span class="ruby-value">50</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Extracting customers with more than #{count} machines&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Extractor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-identifier">infile</span>,
+                          <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">a_filename</span>,
+                          <span class="ruby-identifier">rows</span><span class="ruby-operator">:</span>    <span class="ruby-node">&quot;0,1,BEGINn5&gt;=#{count}END&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Extract customer name and machine count&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Extractor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-identifier">a_filename</span>,
+                          <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">count_filename</span>,
+                          <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;0,5&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Extract customer name, machine count and age older than 7 years&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Extractor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-identifier">a_filename</span>,
+                          <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">age_filename</span>,
+                          <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;0,5,6&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>;
+  <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;You can find the result in '#{a_filename}', '#{count_filename}' &quot;</span><span class="ruby-operator">+</span>
+       <span class="ruby-node">&quot;and '#{age_filename}'&quot;</span>
+  
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.1.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
