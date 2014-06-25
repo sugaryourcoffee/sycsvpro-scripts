@@ -174,3 +174,28 @@ def machine_count_top
   
 end
 
+def region_revenue
+  infile, result, *others = params
+
+  country_part = "#{others[0]}" << "-#{others[1]}" if others[1]
+  out_file_name = "#{country_part}-spares-and-repairs-revenues.csv"
+
+  puts; print "Creating table from spares and repairs revenue for country "+
+              "#{country_part}"
+
+  sp_order_type = %w{ ZRN ZRK }
+  rp_order_type = %w{ ZE ZEI ZO ZOI ZG ZGNT ZRE ZGUP }
+
+  Sycsvpro::Table.new(infile: infile,
+                      outfile: out_file_name,
+                      header:  "Year,SP,RP,Total",
+                      key:     "c0=~/\\.(\\d{4})/",
+                      cols:    "SP:+n10 if #{sp_order_type}.index(c1),"+
+                               "RP:+n10 if #{rp_order_type}.index(c1),"+
+                               "Total:+n10 if #{sp_order_type}.index(c1) || "+
+                                            "#{rp_order_type}.index(c1)",
+                      nf:      "DE",
+                      sum:     "top:SP,RP,Total").execute
+
+  puts; puts "You can find the result in #{out_file_name}"
+end
