@@ -81,6 +81,8 @@
     
     <li ><a href="#method-i-machine_count_top">#machine_count_top</a>
     
+    <li ><a href="#method-i-region_revenue">#region_revenue</a>
+    
   </ul>
 </div>
 
@@ -485,6 +487,80 @@ is in  ‘A-customers-xxx-infile_base_name.csv’</p>
   <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;You can find the result in '#{a_filename}', '#{count_filename}' &quot;</span><span class="ruby-operator">+</span>
        <span class="ruby-node">&quot;and '#{age_filename}'&quot;</span>
   
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-region_revenue" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            sycsvpro execute machine_age.rb region_revenue INFILE COUNTRY_NAME REGION
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <p>Calculates the revenue per region per year separated to SP, RP and Total</p>
+<dl class="rdoc-list note-list"><dt>INFILE
+<dd>
+<p>input csv-file sperated with colons (;) to operate on Use the resulting
+file from <a href="Object.html#method-i-machine_age">machine_age</a> method
+invocation</p>
+</dd><dt>COUNTRY_NAME
+<dd>
+<p>country-identifier for the resulting file</p>
+</dd><dt>REGION
+<dd>
+<p>region-identifier for the resulting file</p>
+</dd></dl>
+
+<p>Result is in the file ‘COUNTRY_NAME-REGION-spare-and-repairs-revenues.csv’
+If no country/region name is given the result is in
+‘spares-and-repairs-revenues.csv’</p>
+          
+          
+
+          
+          <div class="method-source-code" id="region_revenue-source">
+            <pre><span class="ruby-comment"># File machine_age.rb, line 190</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">region_revenue</span>
+  <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
+
+  <span class="ruby-identifier">country_part</span> = <span class="ruby-node">&quot;#{others[0]}-&quot;</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;#{others[1]}-&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">others</span>.<span class="ruby-identifier">empty?</span>
+  <span class="ruby-identifier">out_file_name</span> = <span class="ruby-node">&quot;#{country_part}spares-and-repairs-revenues.csv&quot;</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Creating table from spares and repairs revenue for country &quot;</span><span class="ruby-operator">+</span>
+              <span class="ruby-node">&quot;#{country_part}&quot;</span>
+
+  <span class="ruby-identifier">sp_order_type</span> = <span class="ruby-node">%w{ ZRN ZRK }</span>
+  <span class="ruby-identifier">rp_order_type</span> = <span class="ruby-node">%w{ ZE ZEI ZO ZOI ZG ZGNT ZRE ZGUP }</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Table</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">infile</span>,
+                      <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">out_file_name</span>,
+                      <span class="ruby-identifier">header</span><span class="ruby-operator">:</span>  <span class="ruby-string">&quot;Year,SP,RP,Total&quot;</span>,
+                      <span class="ruby-identifier">key</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;c0=~/\\d+\\.\\d+\\.(\\d{4})/&quot;</span>,
+                      <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-node">&quot;SP:+n10 if #{sp_order_type}.index(c1),&quot;</span><span class="ruby-operator">+</span>
+                               <span class="ruby-node">&quot;RP:+n10 if #{rp_order_type}.index(c1),&quot;</span><span class="ruby-operator">+</span>
+                               <span class="ruby-node">&quot;Total:+n10 if #{sp_order_type}.index(c1) || &quot;</span><span class="ruby-operator">+</span>
+                                            <span class="ruby-node">&quot;#{rp_order_type}.index(c1)&quot;</span>,
+                      <span class="ruby-identifier">nf</span><span class="ruby-operator">:</span>      <span class="ruby-string">&quot;DE&quot;</span>,
+                      <span class="ruby-identifier">sum</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;top:SP,RP,Total&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;You can find the result in #{out_file_name}&quot;</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           

@@ -174,11 +174,24 @@ def machine_count_top
   
 end
 
+# Calculates the revenue per region per year separated to SP, RP and Total
+#
+# :call-seq:
+#   sycsvpro execute machine_age.rb region_revenue INFILE COUNTRY_NAME REGION
+#   
+# INFILE:: input csv-file sperated with colons (;) to operate on
+#          Use the resulting file from #machine_age method invocation
+# COUNTRY_NAME:: country-identifier for the resulting file
+# REGION:: region-identifier for the resulting file
+# 
+# Result is in the file 'COUNTRY_NAME-REGION-spare-and-repairs-revenues.csv'
+# If no country/region name is given the result is in
+# 'spares-and-repairs-revenues.csv'
 def region_revenue
   infile, result, *others = params
 
-  country_part = "#{others[0]}" << "-#{others[1]}" if others[1]
-  out_file_name = "#{country_part}-spares-and-repairs-revenues.csv"
+  country_part = "#{others[0]}-" << "#{others[1]}-" unless others.empty?
+  out_file_name = "#{country_part}spares-and-repairs-revenues.csv"
 
   puts; print "Creating table from spares and repairs revenue for country "+
               "#{country_part}"
@@ -189,7 +202,7 @@ def region_revenue
   Sycsvpro::Table.new(infile: infile,
                       outfile: out_file_name,
                       header:  "Year,SP,RP,Total",
-                      key:     "c0=~/\\.(\\d{4})/",
+                      key:     "c0=~/\\d+\\.\\d+\\.(\\d{4})/",
                       cols:    "SP:+n10 if #{sp_order_type}.index(c1),"+
                                "RP:+n10 if #{rp_order_type}.index(c1),"+
                                "Total:+n10 if #{sp_order_type}.index(c1) || "+

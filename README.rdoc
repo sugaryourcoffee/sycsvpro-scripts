@@ -26,6 +26,10 @@ use #machine_count_top
 
 Note: _machine-ages-country.csv_ is the result of #machine_age
 
+To analyze the region's revenue use #region_revenue
+
+    sycsvpro execute machine_age.rb region_revenue region.csv country region
+
 ==RSC Analysis
 Create the analysis with #expired_rsc
 
