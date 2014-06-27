@@ -174,7 +174,14 @@ def machine_count_top
   
 end
 
-# Calculates the revenue per region per year separated to SP, RP and Total
+# Calculates the revenue per region per year separated to SP, RP and Total and
+# creates a file of the form
+#
+#     Year | SP      | RP     | Total
+#     ---- | ------- | ------ | -------
+#          | 3500.50 | 300.30 | 3600.80
+#     2013 | 2200.50 | 200.20 | 2400.70
+#     2014 | 1300.00 | 100.10 | 1200.10
 #
 # :call-seq:
 #   sycsvpro execute machine_age.rb region_revenue INFILE COUNTRY_NAME REGION
@@ -194,7 +201,7 @@ def region_revenue
   out_file_name = "#{country_part}spares-and-repairs-revenues.csv"
 
   puts; print "Creating table from spares and repairs revenue for country "+
-              "#{country_part}"
+              "#{country_part.chop}"
 
   sp_order_type = %w{ ZRN ZRK }
   rp_order_type = %w{ ZE ZEI ZO ZOI ZG ZGNT ZRE ZGUP }
