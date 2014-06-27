@@ -174,6 +174,89 @@ def machine_count_top
   
 end
 
+# Extracts the rows for region out of the infile
+# :call-seq:
+#   sycsvpro execute machine_age.rb extract_region INFILE REGION COUNTRY_NAME
+#
+# INFILE:: input csv-file sperated with colons (;) to operate on
+# REGION:: filter for the rows and region-identifier for the resulting file
+# COUNTRY_NAME:: country-identifier for the resulting (optional)
+# 
+# Result is in the file 'COUNTRY_NAME-REGION-spare-and-repairs.csv'
+# If no country/region name is given the result is in
+# 'spares-and-repairs.csv'
+def extract_regional_data
+  infile, result, *others = params
+
+  country_part = ""
+  country_part << "#{others[0]}-" if others[0]
+  country_part << "#{others[1]}-" if others[1]
+  out_file_name = "#{country_part}spares-and-repairs.csv"
+
+  puts; print "Extracting rows of #{country_part.chop}"
+
+  row_filter = "BEGINs18=='#{others[0]}'||s18=='RE_GEBIET'END"
+
+  Sycsvpro::Extractor.new(infile:  infile,
+                          outfile: out_file_name,
+                          rows:    row_filter).execute
+
+  puts; puts "You can find the result in #{out_file_name}"
+end
+
+# Collects the countries and regions contained in the infile. This is just for
+# information purposes to know for which countries and regions data is
+# available
+#
+# :call-seq:
+#   sycsvpro execute machine_age.rb extract_countries_and_regions INFILE
+#
+# INFILE:: input csv-file sperated with colons (;) to operate on
+# 
+# Result is in the file 'countries_and_regions.csv'
+def extract_countries_and_regions
+  infile, result, *others = params
+  out_file_name = "countries_and_regions.csv"
+
+  puts; print "Extracting countries and regions from #{infile}"
+
+  col_filter = "COUNTRIES:4-6+REGIONS:18"
+
+  Sycsvpro::Collector.new(infile:  infile,
+                          outfile: out_file_name,
+                          cols:    col_filter).execute
+
+  puts; puts "You can find the collection result in #{out_file_name}"
+end
+
+# Extracts country and region combinations from the infile. This is just for
+# information purposes and can be used to extract country rows from the 
+# file with `extract_regional_data`
+#
+# Creates result as
+#  
+#     REGION;COUNTRIES
+#     SDW;DE;AT
+#
+# :call-seq:
+#   sycsvpro execute country_region_combination infile
+#
+# INFILE:: input csv-file sperated with colons (;) to operate on
+def country_region_combination
+  infile, result, *others = params
+  outfile = "country-region-combinations.csv"
+
+  puts; print "Extracting country-region combinations from #{infile}"
+
+  Sycsvpro::Allocator.new(infile: infile,
+                          outfile: outfile,
+                          key:     "18",
+                          cols:    "4-6").execute
+
+  puts; puts "The result can be found in '#{outfile}'"
+
+end
+
 # Calculates the revenue per region per year separated to SP, RP and Total and
 # creates a file of the form
 #
@@ -197,7 +280,9 @@ end
 def region_revenue
   infile, result, *others = params
 
-  country_part = "#{others[0]}-" << "#{others[1]}-" unless others.empty?
+  country_part = ""
+  country_part << "#{others[0]}-" if others[0]
+  country_part << "#{others[1]}-" if others[1]
   out_file_name = "#{country_part}spares-and-repairs-revenues.csv"
 
   puts; print "Creating table from spares and repairs revenue for country "+
