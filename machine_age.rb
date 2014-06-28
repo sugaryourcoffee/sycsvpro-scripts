@@ -9,10 +9,10 @@ require 'syctimeleap/time_leap'
 # COUNTRY_NAME:: country-identifier for the resulting files
 #
 # Result of ABC analysis is in the file 'ABC-analysis-COUNTRY_NAME.csv'. If no
-# COUNTRY_NAME is given the result is in 'ABC-analysis-infile_base_name.csv' 
+# COUNTRY_NAME is given the result is in 'ABC-analysis-infile_basename.csv' 
 def abc_analysis
   infile, result, *others = params
-  abc_filename = "ABC-analysis-#{others[0] || File.base_name(infile, '.*')}.csv"
+  abc_filename = "ABC-analysis-#{others[0] || File.basename(infile, '.*')}.csv"
 
   puts; print "Assigning machine count to customers..."
 
@@ -70,11 +70,11 @@ end
 # COUNTRY_NAME:: country-identifier for the resulting files
 #   
 # Result of machine ages is in the file 'machine-ages-COUNTRY_NAME.csv'. If no
-# COUNTRY_NAME is given the result is in 'machine-ages-infile_base_name.csv' 
+# COUNTRY_NAME is given the result is in 'machine-ages-infile_basename.csv' 
 def machine_age
 
   infile, result, *others = params
-  ages_filename = "machine-ages-#{others[0] || File.base_name(infile, '.*')}.csv"
+  ages_filename = "machine-ages-#{others[0] || File.basename(infile, '.*')}.csv"
 
   puts; print "Extracting date columns for #{infile}..."
 
@@ -142,12 +142,12 @@ end
 # Result is in the file 'A-customers-NAME.csv', 
 # 'A-customers-count-COUNTRY_NAME.csv' and 'A-customers-age-COUNTRY_NAME.csv'. 
 # If no COUNTRY_NAME is given the result is in 
-# 'A-customers-xxx-infile_base_name.csv' 
+# 'A-customers-xxx-infile_basename.csv' 
 def machine_count_top
   infile, result, *others = params
-  a_filename = "A-customers-#{others[0] || File.base_name(infile, '.*')}.csv"
-  count_filename = "A-customers-count-#{others[0] || File.base_name(infile, '.*')}.csv"
-  age_filename = "A-customers-age-#{others[0] || File.base_name(infile, '.*')}.csv"
+  a_filename = "A-customers-#{others[0] || File.basename(infile, '.*')}.csv"
+  count_filename = "A-customers-count-#{others[0] || File.basename(infile, '.*')}.csv"
+  age_filename = "A-customers-age-#{others[0] || File.basename(infile, '.*')}.csv"
   count = others[1] || 50
 
   puts; print "Extracting customers with more than #{count} machines"
@@ -202,6 +202,33 @@ def extract_regional_data
                           rows:    row_filter).execute
 
   puts; puts "You can find the result in #{out_file_name}"
+end
+
+# Inserts the customer data into the region file
+# :call-seq:
+#   sycsvpro execute machine_age.rb insert_customer_data INFILE CUSTOMERS
+#
+# INFILE:: input csv-file sperated with colons (;) to operate on
+# CUSTOMERS:: file that contains customer data to be inserted into INFILE
+# 
+# Result is in the file 'INFILE_BASE_NAME-with-customers.csv'
+def insert_customer_data
+  infile, result, *others = params
+
+  outfile = "#{File.basename(infile, '.*')}-with-customers.csv"
+  source = others[0]
+
+  puts; print "Inserting customers from #{source} into #{infile}"
+
+  Sycsvpro::Join.new(infile:        infile,
+                     outfile:       outfile,
+                     source:        source,
+                     cols:          "1,2",
+                     joins:         "0=19",
+                     pos:           "20,21",
+                     insert_header: "OI_EK_NAME,OI_EK_LAND").execute
+
+  puts; puts "You can find the result in #{outfile}"
 end
 
 # Collects the countries and regions contained in the infile. This is just for
