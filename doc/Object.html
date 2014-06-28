@@ -75,7 +75,15 @@
     
     <li ><a href="#method-i-abc_analysis">#abc_analysis</a>
     
+    <li ><a href="#method-i-country_region_combination">#country_region_combination</a>
+    
     <li ><a href="#method-i-expired_rsc">#expired_rsc</a>
+    
+    <li ><a href="#method-i-extract_countries_and_regions">#extract_countries_and_regions</a>
+    
+    <li ><a href="#method-i-extract_regional_data">#extract_regional_data</a>
+    
+    <li ><a href="#method-i-insert_customer_data">#insert_customer_data</a>
     
     <li ><a href="#method-i-machine_age">#machine_age</a>
     
@@ -144,7 +152,7 @@
 
 <p>Result of ABC analysis is in the file ‘ABC-analysis-COUNTRY_NAME.csv’. If
 no COUNTRY_NAME is given the result is in
-‘ABC-analysis-infile_base_name.csv’</p>
+‘ABC-analysis-infile_basename.csv’</p>
           
           
 
@@ -153,7 +161,7 @@ no COUNTRY_NAME is given the result is in
             <pre><span class="ruby-comment"># File machine_age.rb, line 13</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">abc_analysis</span>
   <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
-  <span class="ruby-identifier">abc_filename</span> = <span class="ruby-node">&quot;ABC-analysis-#{others[0] || File.base_name(infile, '.*')}.csv&quot;</span>
+  <span class="ruby-identifier">abc_filename</span> = <span class="ruby-node">&quot;ABC-analysis-#{others[0] || File.basename(infile, '.*')}.csv&quot;</span>
 
   <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Assigning machine count to customers...&quot;</span>
 
@@ -199,6 +207,64 @@ no COUNTRY_NAME is given the result is in
   <span class="ruby-identifier">clean_up</span>([<span class="ruby-string">&quot;aggregate.csv&quot;</span>, <span class="ruby-string">&quot;sort.csv&quot;</span>, <span class="ruby-string">&quot;count.csv&quot;</span>])
 
   <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;You can find the result of the ABC Analysis in '#{abc_filename}'&quot;</span>
+
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-country_region_combination" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            sycsvpro execute country_region_combination infile
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <p>Extracts country and region combinations from the infile. This is just for
+information purposes and can be used to extract country rows from the  file
+with `extract_regional_data`</p>
+
+<p>Creates result as</p>
+
+<pre>REGION;COUNTRIES
+SDW;DE;AT</pre>
+<dl class="rdoc-list note-list"><dt>INFILE
+<dd>
+<p>input csv-file sperated with colons (;) to operate on</p>
+</dd></dl>
+          
+          
+
+          
+          <div class="method-source-code" id="country_region_combination-source">
+            <pre><span class="ruby-comment"># File machine_age.rb, line 272</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">country_region_combination</span>
+  <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
+  <span class="ruby-identifier">outfile</span> = <span class="ruby-string">&quot;country-region-combinations.csv&quot;</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Extracting country-region combinations from #{infile}&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Allocator</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">infile</span>,
+                          <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">outfile</span>,
+                          <span class="ruby-identifier">key</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;18&quot;</span>,
+                          <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-string">&quot;4-6&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;The result can be found in '#{outfile}'&quot;</span>
 
 <span class="ruby-keyword">end</span></pre>
           </div>
@@ -317,6 +383,185 @@ otherwise the result is in infile_base_name-ibase.csv</p>
       </div>
 
     
+      <div id="method-i-extract_countries_and_regions" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            sycsvpro execute machine_age.rb extract_countries_and_regions INFILE
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <p>Collects the countries and regions contained in the infile. This is just
+for information purposes to know for which countries and regions data is
+available</p>
+<dl class="rdoc-list note-list"><dt>INFILE
+<dd>
+<p>input csv-file sperated with colons (;) to operate on</p>
+</dd></dl>
+
+<p>Result is in the file ‘countries_and_regions.csv’</p>
+          
+          
+
+          
+          <div class="method-source-code" id="extract_countries_and_regions-source">
+            <pre><span class="ruby-comment"># File machine_age.rb, line 244</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">extract_countries_and_regions</span>
+  <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
+  <span class="ruby-identifier">out_file_name</span> = <span class="ruby-string">&quot;countries_and_regions.csv&quot;</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Extracting countries and regions from #{infile}&quot;</span>
+
+  <span class="ruby-identifier">col_filter</span> = <span class="ruby-string">&quot;COUNTRIES:4-6+REGIONS:18&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Collector</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-identifier">infile</span>,
+                          <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">out_file_name</span>,
+                          <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>    <span class="ruby-identifier">col_filter</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;You can find the collection result in #{out_file_name}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-extract_regional_data" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            sycsvpro execute machine_age.rb extract_region INFILE REGION COUNTRY_NAME
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <p>Extracts the rows for region out of the infile</p>
+<dl class="rdoc-list note-list"><dt>INFILE
+<dd>
+<p>input csv-file sperated with colons (;) to operate on</p>
+</dd><dt>REGION
+<dd>
+<p>filter for the rows and region-identifier for the resulting file</p>
+</dd><dt>COUNTRY_NAME
+<dd>
+<p>country-identifier for the resulting (optional)</p>
+</dd></dl>
+
+<p>Result is in the file ‘COUNTRY_NAME-REGION-spare-and-repairs.csv’ If no
+country/region name is given the result is in ‘spares-and-repairs.csv’</p>
+          
+          
+
+          
+          <div class="method-source-code" id="extract_regional_data-source">
+            <pre><span class="ruby-comment"># File machine_age.rb, line 188</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">extract_regional_data</span>
+  <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
+
+  <span class="ruby-identifier">country_part</span> = <span class="ruby-string">&quot;&quot;</span>
+  <span class="ruby-identifier">country_part</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;#{others[0]}-&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">others</span>[<span class="ruby-value">0</span>]
+  <span class="ruby-identifier">country_part</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;#{others[1]}-&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">others</span>[<span class="ruby-value">1</span>]
+  <span class="ruby-identifier">out_file_name</span> = <span class="ruby-node">&quot;#{country_part}spares-and-repairs.csv&quot;</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Extracting rows of #{country_part.chop}&quot;</span>
+
+  <span class="ruby-identifier">row_filter</span> = <span class="ruby-node">&quot;BEGINs18=='#{others[0]}'||s18=='RE_GEBIET'END&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Extractor</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>  <span class="ruby-identifier">infile</span>,
+                          <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span> <span class="ruby-identifier">out_file_name</span>,
+                          <span class="ruby-identifier">rows</span><span class="ruby-operator">:</span>    <span class="ruby-identifier">row_filter</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;You can find the result in #{out_file_name}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-insert_customer_data" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            sycsvpro execute machine_age.rb insert_customer_data INFILE CUSTOMERS
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <p>Inserts the customer data into the region file</p>
+<dl class="rdoc-list note-list"><dt>INFILE
+<dd>
+<p>input csv-file sperated with colons (;) to operate on</p>
+</dd><dt>CUSTOMERS
+<dd>
+<p>file that contains customer data to be inserted into INFILE</p>
+</dd></dl>
+
+<p>Result is in the file ‘INFILE_BASE_NAME-with-customers.csv’</p>
+          
+          
+
+          
+          <div class="method-source-code" id="insert_customer_data-source">
+            <pre><span class="ruby-comment"># File machine_age.rb, line 215</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">insert_customer_data</span>
+  <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
+
+  <span class="ruby-identifier">outfile</span> = <span class="ruby-node">&quot;#{File.basename(infile, '.*')}-with-customers.csv&quot;</span>
+  <span class="ruby-identifier">source</span> = <span class="ruby-identifier">others</span>[<span class="ruby-value">0</span>]
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Inserting customers from #{source} into #{infile}&quot;</span>
+
+  <span class="ruby-constant">Sycsvpro</span><span class="ruby-operator">::</span><span class="ruby-constant">Join</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">infile</span><span class="ruby-operator">:</span>        <span class="ruby-identifier">infile</span>,
+                     <span class="ruby-identifier">outfile</span><span class="ruby-operator">:</span>       <span class="ruby-identifier">outfile</span>,
+                     <span class="ruby-identifier">source</span><span class="ruby-operator">:</span>        <span class="ruby-identifier">source</span>,
+                     <span class="ruby-identifier">cols</span><span class="ruby-operator">:</span>          <span class="ruby-string">&quot;1,2;1,2&quot;</span>,
+                     <span class="ruby-identifier">joins</span><span class="ruby-operator">:</span>         <span class="ruby-string">&quot;0=19;0=20&quot;</span>,
+                     <span class="ruby-identifier">pos</span><span class="ruby-operator">:</span>           <span class="ruby-string">&quot;20,21;23;24&quot;</span>,
+                     <span class="ruby-identifier">insert_header</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;OI_EK_NAME,OI_EK_LAND;OI_AG_NAME,OI_AG_LAND&quot;</span>).<span class="ruby-identifier">execute</span>
+
+  <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;You can find the result in #{outfile}&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
       <div id="method-i-machine_age" class="method-detail ">
         
         
@@ -344,7 +589,7 @@ otherwise the result is in infile_base_name-ibase.csv</p>
 
 <p>Result of machine ages is in the file ‘machine-ages-COUNTRY_NAME.csv’. If
 no COUNTRY_NAME is given the result is in
-‘machine-ages-infile_base_name.csv’</p>
+‘machine-ages-infile_basename.csv’</p>
           
           
 
@@ -354,7 +599,7 @@ no COUNTRY_NAME is given the result is in
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">machine_age</span>
 
   <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
-  <span class="ruby-identifier">ages_filename</span> = <span class="ruby-node">&quot;machine-ages-#{others[0] || File.base_name(infile, '.*')}.csv&quot;</span>
+  <span class="ruby-identifier">ages_filename</span> = <span class="ruby-node">&quot;machine-ages-#{others[0] || File.basename(infile, '.*')}.csv&quot;</span>
 
   <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Extracting date columns for #{infile}...&quot;</span>
 
@@ -451,7 +696,7 @@ invocation</p>
 <p>Result is in the file ‘A-customers-NAME.csv’, 
 ‘A-customers-count-COUNTRY_NAME.csv’ and
 ‘A-customers-age-COUNTRY_NAME.csv’.  If no COUNTRY_NAME is given the result
-is in  ‘A-customers-xxx-infile_base_name.csv’</p>
+is in  ‘A-customers-xxx-infile_basename.csv’</p>
           
           
 
@@ -460,9 +705,9 @@ is in  ‘A-customers-xxx-infile_base_name.csv’</p>
             <pre><span class="ruby-comment"># File machine_age.rb, line 146</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">machine_count_top</span>
   <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
-  <span class="ruby-identifier">a_filename</span> = <span class="ruby-node">&quot;A-customers-#{others[0] || File.base_name(infile, '.*')}.csv&quot;</span>
-  <span class="ruby-identifier">count_filename</span> = <span class="ruby-node">&quot;A-customers-count-#{others[0] || File.base_name(infile, '.*')}.csv&quot;</span>
-  <span class="ruby-identifier">age_filename</span> = <span class="ruby-node">&quot;A-customers-age-#{others[0] || File.base_name(infile, '.*')}.csv&quot;</span>
+  <span class="ruby-identifier">a_filename</span> = <span class="ruby-node">&quot;A-customers-#{others[0] || File.basename(infile, '.*')}.csv&quot;</span>
+  <span class="ruby-identifier">count_filename</span> = <span class="ruby-node">&quot;A-customers-count-#{others[0] || File.basename(infile, '.*')}.csv&quot;</span>
+  <span class="ruby-identifier">age_filename</span> = <span class="ruby-node">&quot;A-customers-age-#{others[0] || File.basename(infile, '.*')}.csv&quot;</span>
   <span class="ruby-identifier">count</span> = <span class="ruby-identifier">others</span>[<span class="ruby-value">1</span>] <span class="ruby-operator">||</span> <span class="ruby-value">50</span>
 
   <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Extracting customers with more than #{count} machines&quot;</span>
@@ -514,7 +759,14 @@ is in  ‘A-customers-xxx-infile_base_name.csv’</p>
 
         <div class="method-description">
           
-          <p>Calculates the revenue per region per year separated to SP, RP and Total</p>
+          <p>Calculates the revenue per region per year separated to SP, RP and Total
+and creates a file of the form</p>
+
+<pre>Year | SP      | RP     | Total
+---- | ------- | ------ | -------
+     | 3500.50 | 300.30 | 3600.80
+2013 | 2200.50 | 200.20 | 2400.70
+2014 | 1300.00 | 100.10 | 1200.10</pre>
 <dl class="rdoc-list note-list"><dt>INFILE
 <dd>
 <p>input csv-file sperated with colons (;) to operate on Use the resulting
@@ -536,15 +788,17 @@ If no country/region name is given the result is in
 
           
           <div class="method-source-code" id="region_revenue-source">
-            <pre><span class="ruby-comment"># File machine_age.rb, line 190</span>
+            <pre><span class="ruby-comment"># File machine_age.rb, line 307</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">region_revenue</span>
   <span class="ruby-identifier">infile</span>, <span class="ruby-identifier">result</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">others</span> = <span class="ruby-identifier">params</span>
 
-  <span class="ruby-identifier">country_part</span> = <span class="ruby-node">&quot;#{others[0]}-&quot;</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;#{others[1]}-&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">others</span>.<span class="ruby-identifier">empty?</span>
+  <span class="ruby-identifier">country_part</span> = <span class="ruby-string">&quot;&quot;</span>
+  <span class="ruby-identifier">country_part</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;#{others[0]}-&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">others</span>[<span class="ruby-value">0</span>]
+  <span class="ruby-identifier">country_part</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-node">&quot;#{others[1]}-&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">others</span>[<span class="ruby-value">1</span>]
   <span class="ruby-identifier">out_file_name</span> = <span class="ruby-node">&quot;#{country_part}spares-and-repairs-revenues.csv&quot;</span>
 
   <span class="ruby-identifier">puts</span>; <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Creating table from spares and repairs revenue for country &quot;</span><span class="ruby-operator">+</span>
-              <span class="ruby-node">&quot;#{country_part}&quot;</span>
+              <span class="ruby-node">&quot;#{country_part.chop}&quot;</span>
 
   <span class="ruby-identifier">sp_order_type</span> = <span class="ruby-node">%w{ ZRN ZRK }</span>
   <span class="ruby-identifier">rp_order_type</span> = <span class="ruby-node">%w{ ZE ZEI ZO ZOI ZG ZGNT ZRE ZGUP }</span>

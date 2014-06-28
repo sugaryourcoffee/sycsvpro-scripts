@@ -223,10 +223,10 @@ def insert_customer_data
   Sycsvpro::Join.new(infile:        infile,
                      outfile:       outfile,
                      source:        source,
-                     cols:          "1,2",
-                     joins:         "0=19",
-                     pos:           "20,21",
-                     insert_header: "OI_EK_NAME,OI_EK_LAND").execute
+                     cols:          "1,2;1,2",
+                     joins:         "0=19;0=20",
+                     pos:           "20,21;23;24",
+                     insert_header: "OI_EK_NAME,OI_EK_LAND;OI_AG_NAME,OI_AG_LAND").execute
 
   puts; puts "You can find the result in #{outfile}"
 end

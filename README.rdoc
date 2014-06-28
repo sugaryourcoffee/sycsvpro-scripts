@@ -10,6 +10,9 @@ The resulting files can be used in a spread sheet like _Excel_ or
 <em>LibreOffice Calc<em>.
 
 ==Spare Parts Analysis
+There are some analyzer files that allow to retrieve relevant data for business
+decissions.
+
 To do an ABC analysis of equipments and users use #abc_analysis
 
     sycsvpro execute machine_age.rb abc_analysis country.csv country
@@ -29,6 +32,31 @@ Note: _machine-ages-country.csv_ is the result of #machine_age
 To analyze the region's revenue use #region_revenue
 
     sycsvpro execute machine_age.rb region_revenue region.csv country region
+
+===Helpers
+There are some methods intendet for getting some information you might need for
+furter exploration of the data.
+
+To not operate on a csv-file with multimillion rows you can extract rows for
+specific regions with #extract_regional_data
+
+    sycsvpro execute machine_age.rb extract_region world.csv region country
+
+If you have only customer IDs in your target file you can insert customer names
+from a source file with #insert_customer_data
+
+    sycsvpro execute machine_age.rb insert_customer_data region.csv customer.csv
+
+To see which countries and regions are in a file you can use
+#extract_countries_and_regions
+
+    sycsvpro execute machine_age.rb extract_countries_and_regions world.csv
+
+To see whether there are region abbreviations used in different countries you
+can assign to a region abbreviation all assigned countries with 
+#country_region_combination
+
+    sycsvpro execute machine_age.rb country_region_combination world.csv
 
 ==RSC Analysis
 Create the analysis with #expired_rsc

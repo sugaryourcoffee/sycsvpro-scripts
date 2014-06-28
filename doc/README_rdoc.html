@@ -60,6 +60,7 @@
   <ul class="link-list" role="directory">
     <li><a href="#label-Scripts+for+sycsvpro">Scripts for sycsvpro</a>
     <li><a href="#label-Spare+Parts+Analysis">Spare Parts Analysis</a>
+    <li><a href="#label-Helpers">Helpers</a>
     <li><a href="#label-RSC+Analysis">RSC Analysis</a>
     <li><a href="#label-License">License</a>
     <li><a href="#label-Contact">Contact</a>
@@ -99,6 +100,9 @@ analyze and operate on csv-files. If you have recurring tasks use
 
 <h2 id="label-Spare+Parts+Analysis">Spare Parts Analysis<span><a href="#label-Spare+Parts+Analysis">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
 
+<p>There are some analyzer files that allow to retrieve relevant data for
+business decissions.</p>
+
 <p>To do an ABC analysis of equipments and users use abc_analysis</p>
 
 <pre>sycsvpro execute machine_age.rb abc_analysis country.csv country</pre>
@@ -118,6 +122,32 @@ country 50</pre>
 <p>To analyze the region’s revenue use region_revenue</p>
 
 <pre>sycsvpro execute machine_age.rb region_revenue region.csv country region</pre>
+
+<h3 id="label-Helpers">Helpers<span><a href="#label-Helpers">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>There are some methods intendet for getting some information you might need
+for furter exploration of the data.</p>
+
+<p>To not operate on a csv-file with multimillion rows you can extract rows
+for specific regions with extract_regional_data</p>
+
+<pre>sycsvpro execute machine_age.rb extract_region world.csv region country</pre>
+
+<p>If you have only customer IDs in your target file you can insert customer
+names from a source file with insert_customer_data</p>
+
+<pre>sycsvpro execute machine_age.rb insert_customer_data region.csv customer.csv</pre>
+
+<p>To see which countries and regions are in a file you can use
+extract_countries_and_regions</p>
+
+<pre>sycsvpro execute machine_age.rb extract_countries_and_regions world.csv</pre>
+
+<p>To see whether there are region abbreviations used in different countries
+you can assign to a region abbreviation all assigned countries with 
+country_region_combination</p>
+
+<pre>sycsvpro execute machine_age.rb country_region_combination world.csv</pre>
 
 <h2 id="label-RSC+Analysis">RSC Analysis<span><a href="#label-RSC+Analysis">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
 
