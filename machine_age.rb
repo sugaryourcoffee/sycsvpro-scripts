@@ -1,11 +1,47 @@
 require 'syctimeleap/time_leap'
 
+# Acts like a README by printing out the sequence of method invocations to
+# achieve a certain result.
+# 
+# :call-seq:
+#   sycsvpro execute machine_age.rb readme
+#
+def readme
+  puts
+  puts "Usage of machine_age.rb"
+  puts "======================="
+  puts
+  puts "1. Machine analysis"
+  puts "-------------------"
+  puts "1.1 abc_analysis (INFILE: EUNA download)"
+  puts "1.2 machine_age (INFILE: EUNA downlaod"
+  puts "1.3 machine_count_top (INFILE: see note)"
+  puts "    Note: use the resulting file from 'machine_age'"
+  puts
+  puts "2. Spares and Repairs analysis"
+  puts "------------------------------"
+  puts "2.1 extract_regional_data (INFILE: DWH download)"
+  puts "    Note: Only if you want to analyze a specific country and extract "
+  puts "          it from a world file"
+  puts "2.2 insert_customer_data (INFILE: result from 2.1 or DWH download"
+  puts "2.3 region_revenue (INFILE: result from 2.2 or DWH download)"
+  puts "2.4 customer_revenue (INFILE: result from 2.2)"  
+  puts
+  puts "3. Conduct complete analysis in one swoop"
+  puts "-----------------------------------------"
+  puts "3.1 machine_analysis (includes 1.1 - 1.3, INFILE: EUNA downlaod)"
+  puts "3.2 spares_and_repairs_analysis_complete (includes 2.1 - 2.4,"
+  puts "    INFILE: DWH download)"
+  puts "3.3 spares_and_repairs_analysis (includes 2.3 - 2.4,"
+  puts "    INFILE: DWH downlaod)"
+end
+
 # Conducts a ABC analysis based on machine count
 #
 # :call-seq:
 #   sycsvpro execute machine_age.rb abc_analysis INFILE COUNTRY_NAME
 #
-# INFILE:: input csv-file sperated with colons (;) to operate on
+# INFILE:: input csv-file sperated with colons (;) to operate on (EUNA downlaod)
 # COUNTRY_NAME:: country-identifier for the resulting files
 #
 # Result of ABC analysis is in the file 'ABC-analysis-COUNTRY_NAME.csv'. If no
@@ -66,7 +102,7 @@ end
 # :call-seq:
 #   sycsvpro execute machine_age.rb machine_age INFILE COUNTRY_NAME
 #
-# INFILE:: input csv-file sperated with colons (;) to operate on
+# INFILE:: input csv-file sperated with colons (;) to operate on (EUNA download)
 # COUNTRY_NAME:: country-identifier for the resulting files
 #   
 # Result of machine ages is in the file 'machine-ages-COUNTRY_NAME.csv'. If no
@@ -134,8 +170,8 @@ end
 # :call-seq:
 #   sycsvpro execute machine_age.rb machine_count_top INFILE COUNTRY_NAME COUNT
 #   
-# INFILE:: input csv-file sperated with colons (;) to operate on
-#          Use the resulting file from #machine_age method invocation
+# INFILE:: input csv-file sperated with colons (;) to operate on (see note)
+#          Note: Use the resulting file from #machine_age method invocation
 # COUNTRY_NAME:: country-identifier for the resulting files
 # COUNT:: select rows only with machine count >= COUNT
 # 
@@ -178,7 +214,7 @@ end
 # :call-seq:
 #   sycsvpro execute machine_age.rb extract_region INFILE REGION COUNTRY_NAME
 #
-# INFILE:: input csv-file sperated with colons (;) to operate on
+# INFILE:: input csv-file sperated with colons (;) to operate on (DWH download)
 # REGION:: filter for the rows and region-identifier for the resulting file
 # COUNTRY_NAME:: country-identifier for the resulting (optional)
 # 
@@ -208,7 +244,8 @@ end
 # :call-seq:
 #   sycsvpro execute machine_age.rb insert_customer_data INFILE CUSTOMERS
 #
-# INFILE:: input csv-file sperated with colons (;) to operate on
+# INFILE:: input csv-file sperated with colons (;) to operate on (DWH download
+#          or result from #extract_regional_data
 # CUSTOMERS:: file that contains customer data to be inserted into INFILE
 # 
 # Result is in the file 'INFILE_BASE_NAME-with-customers.csv'
@@ -238,7 +275,8 @@ end
 # :call-seq:
 #   sycsvpro execute machine_age.rb extract_countries_and_regions INFILE
 #
-# INFILE:: input csv-file sperated with colons (;) to operate on
+# INFILE:: input csv-file sperated with colons (;) to operate on (DWH download
+#          or result from #extract_regional_data
 # 
 # Result is in the file 'countries_and_regions.csv'
 def extract_countries_and_regions
@@ -268,7 +306,8 @@ end
 # :call-seq:
 #   sycsvpro execute country_region_combination infile
 #
-# INFILE:: input csv-file sperated with colons (;) to operate on
+# INFILE:: input csv-file sperated with colons (;) to operate on (DWH download
+#          or result from #extract_regional_data
 def country_region_combination
   infile, result, *others = params
   outfile = "country-region-combinations.csv"
@@ -287,17 +326,17 @@ end
 # Calculates the revenue per region per year separated to SP, RP and Total and
 # creates a file of the form
 #
-#     Year | SP      | RP     | Total
-#     ---- | ------- | ------ | -------
-#          | 3500.50 | 300.30 | 3600.80
-#     2013 | 2200.50 | 200.20 | 2400.70
-#     2014 | 1300.00 | 100.10 | 1200.10
+#     Year | SP      | RP     | Total   | SP-Orders | RP-Orders | Orders |
+#     ---- | ------- | ------ | ------- | --------- | --------- | ------ |
+#          | 3500.50 | 300.30 | 3600.80 | 100       | 50        | 150    |
+#     2013 | 2200.50 | 200.20 | 2400.70 |  80       | 40        | 120    |
+#     2014 | 1300.00 | 100.10 | 1200.10 |  20       | 10        |  30    |
 #
 # :call-seq:
 #   sycsvpro execute machine_age.rb region_revenue INFILE COUNTRY_NAME REGION
 #   
-# INFILE:: input csv-file sperated with colons (;) to operate on
-#          Use the resulting file from #machine_age method invocation
+# INFILE:: input csv-file sperated with colons (;) to operate on (DWH download
+#          or result from #extract_regional_data)
 # COUNTRY_NAME:: country-identifier for the resulting file
 # REGION:: region-identifier for the resulting file
 # 
@@ -317,17 +356,86 @@ def region_revenue
 
   sp_order_type = %w{ ZRN ZRK }
   rp_order_type = %w{ ZE ZEI ZO ZOI ZG ZGNT ZRE ZGUP }
+  order_type = sp_order_type + rp_order_type
 
   Sycsvpro::Table.new(infile: infile,
                       outfile: out_file_name,
-                      header:  "Year,SP,RP,Total",
+                      header:  "Year,SP,RP,Total,SP-Orders,RP-Orders,Orders",
                       key:     "c0=~/\\d+\\.\\d+\\.(\\d{4})/",
                       cols:    "SP:+n10 if #{sp_order_type}.index(c1),"+
                                "RP:+n10 if #{rp_order_type}.index(c1),"+
-                               "Total:+n10 if #{sp_order_type}.index(c1) || "+
-                                            "#{rp_order_type}.index(c1)",
+                               "Total:+n10 if #{order_type}.index(c1),"+
+                               "SP-Orders:+1 if #{sp_order_type}.index(c1),"+
+                               "RP-Orders:+1 if #{rp_order_type}.index(c1),"+
+                               "Orders:+1 if #{order_type}.index(c1)",
                       nf:      "DE",
                       sum:     "top:SP,RP,Total").execute
+
+  puts; puts "You can find the result in #{out_file_name}"
+end
+
+# Analyze the customer revenue for spares and repairs per year
+#
+# | Customer | YEAR-SP-R | YEAR-RP-R | YEAR-R | YEAR-SP-O | YEAR-RP-O | YEAR-O |
+# |          | 3500      | 1300      | 4800   | 80        | 40        | 120    |
+# | Mia      | 1500      |  300      | 1800   | 30        | 10        |  40    |
+# | Hank     | 2000      | 1000      | 3000   | 50        | 30        |  80    |
+#
+# :call-seq:
+#   sycsvpro execute machine_age.rb customer_revenue INFILE COUNTRY_NAME REGION
+# 
+# INFILE:: input csv-file sperated with colons (;) to operate on (result from 
+#          #insert_customer_data)
+# COUNTRY_NAME:: country-identifier for the resulting file
+# REGION:: region-identifier for the resulting file
+##
+# The result will be in 
+# 'COUNTRY_NAME-REGION-customer-revenues-per-year-and-type.csv' if no
+# COUNTRY_NAME or REGION is given the result is in
+# 'customer-revenues-per-year-and-type.csv'
+def customer_revenue
+  infile, result, *others = params
+
+  country_part = ""
+  country_part << "#{others[0]}-" if others[0]
+  country_part << "#{others[1]}-" if others[1]
+  out_file_name = "#{country_part}customer-revenue-per-year-and-type.csv"
+
+  puts; print "Creating table from spares and repairs revenue for customers "+
+              "in #{country_part.chop}"
+
+  sp_order_type = %w{ ZRN ZRK }
+  rp_order_type = %w{ ZE ZEI ZO ZOI ZG ZGNT ZRE ZGUP }
+  order_type = sp_order_type + rp_order_type
+
+  header = "c19,c20,BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+R,"+
+                   "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+R,"+
+                   "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+R,"+
+                   "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+O,"+
+                   "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+O,"+
+                   "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+O"
+
+  cols = "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+R:+n10 if #{sp_order_type}.index(c1),"+
+         "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+R:+n10 if #{rp_order_type}.index(c1),"+
+         "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+R:+n10 if #{order_type}.index(c1),"+
+         "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+O:+1 if #{sp_order_type}.index(c1),"+
+         "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+O:+1 if #{sp_order_type}.index(c1),"+
+         "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+O:+1 if #{sp_order_type}.index(c1)"
+
+  sum = "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+R,"
+        "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+R,"
+        "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+R,"
+        "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+O,"
+        "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+O,"
+        "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+O"
+
+  Sycsvpro::Table.new(infile: infile,
+                      outfile: out_file_name,
+                      header:  header,
+                      key:     "c19,c20",
+                      cols:    cols,
+                      nf:      "DE",
+                      sum:     "top:#{sum}").execute
 
   puts; puts "You can find the result in #{out_file_name}"
 end
