@@ -86,7 +86,7 @@ def abc_analysis
                                     outfile: abc_filename,
                                     header:  "*,A,B,C",
                                     rows:    "2-#{result.row_count}",
-                                    cols:    "5:A=c4*c1,6:B=c3*c1,7:C=c2*c1",
+                                    cols:    "5:c4*c1,6:c3*c1,7:c2*c1",
                                     sum:     true)
   
   calculator.execute
@@ -123,7 +123,7 @@ def machine_age
   Sycsvpro::Calculator.new(infile:  "extract.csv",
                            outfile: "calc.csv",
                            header:  "*,Age",
-                           cols:    "5:Age=[d1,d2,d3,d4].compact.min",
+                           cols:    "5:[d1,d2,d3,d4].compact.min",
                            df:      "%d.%m.%Y").execute
 
   puts; print "Create histogram for machine ages..."
@@ -148,7 +148,7 @@ def machine_age
   Sycsvpro::Calculator.new(infile:  "count.csv",
                            outfile: "calc.csv",
                            header:  "*,Older7Years",
-                           cols:    "6:Older7Years=c1+c2").execute
+                           cols:    "6:c1+c2").execute
 
   puts; print "Sorting customers based on machine count and age"
 
@@ -336,7 +336,7 @@ end
 #   sycsvpro execute machine_age.rb region_revenue INFILE COUNTRY_NAME REGION
 #   
 # INFILE:: input csv-file sperated with colons (;) to operate on (DWH download
-#          or result from #extract_regional_data)
+#          or result from #extract_regional_data or #insert_customer_data)
 # COUNTRY_NAME:: country-identifier for the resulting file
 # REGION:: region-identifier for the resulting file
 # 
@@ -354,22 +354,22 @@ def region_revenue
   puts; print "Creating table from spares and repairs revenue for country "+
               "#{country_part.chop}"
 
-  sp_order_type = %w{ ZRN ZRK }
-  rp_order_type = %w{ ZE ZEI ZO ZOI ZG ZGNT ZRE ZGUP }
+  rp_order_type = %w{ ZRN ZRK }
+  sp_order_type = %w{ ZE ZEI ZO ZOI ZG ZGNT ZRE ZGUP }
   order_type = sp_order_type + rp_order_type
 
   Sycsvpro::Table.new(infile: infile,
                       outfile: out_file_name,
                       header:  "Year,SP,RP,Total,SP-Orders,RP-Orders,Orders",
                       key:     "c0=~/\\d+\\.\\d+\\.(\\d{4})/",
-                      cols:    "SP:+n10 if #{sp_order_type}.index(c1),"+
-                               "RP:+n10 if #{rp_order_type}.index(c1),"+
-                               "Total:+n10 if #{order_type}.index(c1),"+
-                               "SP-Orders:+1 if #{sp_order_type}.index(c1),"+
-                               "RP-Orders:+1 if #{rp_order_type}.index(c1),"+
-                               "Orders:+1 if #{order_type}.index(c1)",
+                      cols:    "BEGINSP:+n10 if #{sp_order_type}.index(c1)END,"+
+                               "BEGINRP:+n10 if #{rp_order_type}.index(c1)END,"+
+                               "BEGINTotal:+n10 if #{order_type}.index(c1)END,"+
+                               "BEGINSP-Orders:+1 if #{sp_order_type}.index(c1)END,"+
+                               "BEGINRP-Orders:+1 if #{rp_order_type}.index(c1)END,"+
+                               "BEGINOrders:+1 if #{order_type}.index(c1)END",
                       nf:      "DE",
-                      sum:     "top:SP,RP,Total").execute
+                      sum:     "top:SP,RP,Total,SP-Orders,RP-Orders,Orders").execute
 
   puts; puts "You can find the result in #{out_file_name}"
 end
@@ -380,6 +380,8 @@ end
 # |          | 3500      | 1300      | 4800   | 80        | 40        | 120    |
 # | Mia      | 1500      |  300      | 1800   | 30        | 10        |  40    |
 # | Hank     | 2000      | 1000      | 3000   | 50        | 30        |  80    |
+#
+# The columns may appear in a different sequence. O = Orders, R = Revenue
 #
 # :call-seq:
 #   sycsvpro execute machine_age.rb customer_revenue INFILE COUNTRY_NAME REGION
@@ -404,30 +406,42 @@ def customer_revenue
   puts; print "Creating table from spares and repairs revenue for customers "+
               "in #{country_part.chop}"
 
-  sp_order_type = %w{ ZRN ZRK }
-  rp_order_type = %w{ ZE ZEI ZO ZOI ZG ZGNT ZRE ZGUP }
+  rp_order_type = %w{ ZRN ZRK }
+  sp_order_type = %w{ ZE ZEI ZO ZOI ZG ZGNT ZRE ZGUP }
   order_type = sp_order_type + rp_order_type
 
-  header = "c19,c20,BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+R,"+
-                   "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+R,"+
-                   "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+R,"+
-                   "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+O,"+
-                   "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+O,"+
-                   "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+O"
+  header = "c19,c20,BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                      "'-SP-R'END,"+
+                   "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                      "'-RP-R'END,"+
+                   "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                      "'-R'END,"+
+                   "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                      "'-SP-O'END,"+
+                   "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                      "'-RP-O'END,"+
+                   "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                      "'-O'END"
 
-  cols = "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+R:+n10 if #{sp_order_type}.index(c1),"+
-         "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+R:+n10 if #{rp_order_type}.index(c1),"+
-         "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+R:+n10 if #{order_type}.index(c1),"+
-         "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+O:+1 if #{sp_order_type}.index(c1),"+
-         "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+O:+1 if #{sp_order_type}.index(c1),"+
-         "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+O:+1 if #{sp_order_type}.index(c1)"
+  cols = "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+            "'-SP-R':+n10 if #{sp_order_type}.index(c1)END,"+
+         "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                 "'-RP-R':+n10 if #{rp_order_type}.index(c1)END,"+
+         "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                 "'-R':+n10 if #{order_type}.index(c1)END,"+
+         "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                 "'-SP-O':+1 if #{sp_order_type}.index(c1)END,"+
+         "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                 "'-RP-O':+1 if #{rp_order_type}.index(c1)END,"+
+         "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+"+
+                 "'-O':+1 if #{order_type}.index(c1)END"
 
-  sum = "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+R,"
-        "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+R,"
-        "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+R,"
-        "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+RP+'-'+O,"
-        "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+SP+'-'+O,"
-        "BEGINc0=~/\\d+\\.\\d+\\.(\\d{4})/END+'-'+O"
+  sum = "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+'-SP-R'END,"+
+        "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+'-RP-R'END,"+
+        "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+'-R'END,"+
+        "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+'-SP-O'END,"+
+        "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+'-RP-O'END,"+
+        "BEGIN(c0.scan(/\\d+\\.\\d+\\.(\\d{4})/).flatten[0]||'')+'-O'END"
 
   Sycsvpro::Table.new(infile: infile,
                       outfile: out_file_name,
@@ -435,7 +449,8 @@ def customer_revenue
                       key:     "c19,c20",
                       cols:    cols,
                       nf:      "DE",
-                      sum:     "top:#{sum}").execute
+                      sum:     "top:#{sum}",
+                      sort:    "2").execute
 
   puts; puts "You can find the result in #{out_file_name}"
 end

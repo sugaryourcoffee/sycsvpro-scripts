@@ -2,7 +2,8 @@
 
 *sycsvpro* is a command line interface that can be used to analyze and operate
 on csv-files. If you have recurring tasks use *sycsvpro* for than you can
-use the *sycsvpro* classes in scripts.
+use the *sycsvpro* classes in scripts. It also is adviced to use scripts for 
+complicated parameters.
 
 In the following the usage of different scripts are described.
 
@@ -32,6 +33,10 @@ Note: _machine-ages-country.csv_ is the result of #machine_age
 To analyze the region's revenue use #region_revenue
 
     sycsvpro execute machine_age.rb region_revenue region.csv country region
+
+To analyze customers revenue per type and year use #customer_revenue
+
+    sycsvpro execute machine_age.rb customer_revenue region.csv country region
 
 ===Helpers
 There are some methods intendet for getting some information you might need for
