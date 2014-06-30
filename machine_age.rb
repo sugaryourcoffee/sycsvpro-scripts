@@ -112,7 +112,7 @@ def machine_age
   infile, result, *others = params
   ages_filename = "machine-ages-#{others[0] || File.basename(infile, '.*')}.csv"
 
-  puts; print "Extracting date columns for #{infile}..."
+  puts; print "Extracting date columns from #{infile}..."
 
   Sycsvpro::Extractor.new(infile: infile,
                           outfile: "extract.csv",
@@ -163,6 +163,49 @@ def machine_age
   puts; 
   puts "You can find the result of the histogram data in '#{ages_filename}'"
 
+end
+
+# List all customers with machine count per year. Sum
+# up the machine count.
+#
+# :call-seq:
+#   sycsvpro execute machine_age.rb machine_count_per_year INFILE COUNTRY_NAME
+#
+# INFILE:: input csv-file sperated with colons (;) to operate on (see note)
+#          Note: Use the resulting file from #machine_age method invocation
+# COUNTRY_NAME:: country-identifier for the resulting files
+#
+# Result is in the file 'COUNTRY_NAME-count-per-year.csv', 
+def machine_count_per_year
+  infile, result, *others = params
+  outfile = "#{others[0] || File.basename(infile, '.*')}-count-per-year.csv"
+
+  puts; print "Determine the machine ages based on the oldest date..."
+
+  Sycsvpro::Calculator.new(infile:  infile,
+                           outfile: "calc.csv",
+                           header:  "*,Age",
+                           cols:    "#{result.col_count}:[d10,d11,d12,d84].compact.min",
+                           df:      "%d.%m.%Y").execute
+
+  puts; print "Create table with machine ages per year"
+  
+  header = "c45,BEGINc#{result.col_count}=~/(\\d{4})-\\d{2}-\\d{2}/END"
+  cols   =          "c#{result.col_count}=~/(\\d{4})-\\d{2}-\\d{2}/:+1"
+  sum    =     "BEGINc#{result.col_count}=~/(\\d{4})-\\d{2}-\\d{2}/END"
+
+  Sycsvpro::Table.new(infile:  "calc.csv",
+                      outfile: outfile,
+                      header:  header,
+                      cols:    cols,
+                      key:     "c45",
+                      sum:     "top:#{sum}",
+                      sort:    "1").execute
+  
+  clean_up(["calc.csv"])
+
+  puts; puts "You can find the result in #{outfile}"
+ 
 end
 
 # Extracts the top customers based on machine count and age
