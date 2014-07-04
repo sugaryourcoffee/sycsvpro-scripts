@@ -13,6 +13,7 @@ def readme
   puts
   puts "1. Machine analysis"
   puts "-------------------"
+  puts "1.0 clean_ib_source (INFILE EUNA download)"
   puts "1.1 abc_analysis (INFILE: EUNA download)"
   puts "1.2 machine_age (INFILE: EUNA downlaod"
   puts "1.3 machine_count_top (INFILE: see note)"
@@ -34,6 +35,33 @@ def readme
   puts "    INFILE: DWH download)"
   puts "3.3 spares_and_repairs_analysis (includes 2.3 - 2.4,"
   puts "    INFILE: DWH downlaod)"
+end
+
+# Clean IB source by removing leading 0 from IDs
+#
+# :call-seq:
+#   sycsvpro execute machine_age.rb clean_ib_source INFILE
+#
+# INFILE:: input csv-file sperated with colons (;) to operate on (EUNA downlaod)
+#
+# Result is in the file 'INFILE_BASE_NAME-clean.csv'
+def clean_ib_source
+  infile, result, *others = params
+  outfile = "#{File.basename(infile, '.*')}-clean.csv"
+
+  puts; print "Cleaning #{infile}"
+
+  cols = "14:s14.scan(/^0*(\\d+)/).flatten[0],"+
+         "38:s38.scan(/^0*(\\d+)/).flatten[0],"+
+         "46:s46.scan(/^0*(\\d+)/).flatten[0]"
+
+  calculator = Sycsvpro::Calculator.new(infile:  infile,
+                                        outfile: outfile,
+                                        header:  '*',
+                                        rows:    "1-#{result.row_count}",
+                                        cols:    cols).execute
+
+  puts; puts "You can find the result in '#{outfile}'"
 end
 
 # Conducts a ABC analysis based on machine count
