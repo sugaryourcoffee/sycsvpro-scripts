@@ -1,0 +1,75 @@
+=Scripts for sycsvpro
+
+*sycsvpro* is a command line interface that can be used to analyze and operate
+on csv-files. If you have recurring tasks use *sycsvpro* for than you can
+use the *sycsvpro* classes in scripts. It also is adviced to use scripts for 
+complicated parameters.
+
+In the following the usage of different scripts are described.
+
+The resulting files can be used in a spread sheet like _Excel_ or 
+<em>LibreOffice Calc<em>.
+
+==Spare Parts Analysis
+There are some analyzer files that allow to retrieve relevant data for business
+decissions.
+
+To do an ABC analysis of equipments and users use #abc_analysis
+
+    sycsvpro execute machine_age.rb abc_analysis country.csv country
+
+To analyze equipment ages use #machine_age
+
+    sycsvpro execute machine_age.rb machine_age country.csv country
+
+To analyze top equipment usages with more than 50 equipments 
+use #machine_count_top
+
+    sycsvpro execute machine_age.rb machine_count_top machine-ages-country.csv
+    country 50
+
+Note: _machine-ages-country.csv_ is the result of #machine_age
+
+To analyze the region's revenue use #region_revenue
+
+    sycsvpro execute machine_age.rb region_revenue region.csv country region
+
+To analyze customers revenue per type and year use #customer_revenue
+
+    sycsvpro execute machine_age.rb customer_revenue region.csv country region
+
+===Helpers
+There are some methods intendet for getting some information you might need for
+furter exploration of the data.
+
+To not operate on a csv-file with multimillion rows you can extract rows for
+specific regions with #extract_regional_data
+
+    sycsvpro execute machine_age.rb extract_region world.csv region country
+
+If you have only customer IDs in your target file you can insert customer names
+from a source file with #insert_customer_data
+
+    sycsvpro execute machine_age.rb insert_customer_data region.csv customer.csv
+
+To see which countries and regions are in a file you can use
+#extract_countries_and_regions
+
+    sycsvpro execute machine_age.rb extract_countries_and_regions world.csv
+
+To see whether there are region abbreviations used in different countries you
+can assign to a region abbreviation all assigned countries with 
+#country_region_combination
+
+    sycsvpro execute machine_age.rb country_region_combination world.csv
+
+==RSC Analysis
+Create the analysis with #expired_rsc
+
+    sycsvpro execute expired_rsc.rb expired_rsc country.csv country
+
+==License
+The scripts are released under the {MIT License}[http://opensource.org/licenses/MIT]
+
+==Contact
+mailto:pierre@sugaryourcoffee.de
