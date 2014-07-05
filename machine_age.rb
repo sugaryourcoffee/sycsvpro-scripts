@@ -13,6 +13,10 @@ def readme
   puts
   puts "1. Machine analysis"
   puts "-------------------"
+<<<<<<< HEAD
+=======
+  puts "1.0 clean_ib_source (INFILE EUNA download)"
+>>>>>>> 5b560c25ebf1a09efb65af53b81a7665c9027f5d
   puts "1.1 abc_analysis (INFILE: EUNA download)"
   puts "1.2 machine_age (INFILE: EUNA downlaod"
   puts "1.3 machine_count_top (INFILE: see note)"
@@ -36,14 +40,22 @@ def readme
   puts "    INFILE: DWH downlaod)"
 end
 
+<<<<<<< HEAD
 # Clean IB source
+=======
+# Clean IB source by removing leading 0 from IDs
+>>>>>>> 5b560c25ebf1a09efb65af53b81a7665c9027f5d
 #
 # :call-seq:
 #   sycsvpro execute machine_age.rb clean_ib_source INFILE
 #
 # INFILE:: input csv-file sperated with colons (;) to operate on (EUNA downlaod)
 #
+<<<<<<< HEAD
 # Result is in the file 'INFILE_BASE_NAME-clean.csv'.
+=======
+# Result is in the file 'INFILE_BASE_NAME-clean.csv'
+>>>>>>> 5b560c25ebf1a09efb65af53b81a7665c9027f5d
 def clean_ib_source
   infile, result, *others = params
   outfile = "#{File.basename(infile, '.*')}-clean.csv"
@@ -56,10 +68,17 @@ def clean_ib_source
 
   calculator = Sycsvpro::Calculator.new(infile:  infile,
                                         outfile: outfile,
+<<<<<<< HEAD
                                         header:  "*",
                                         rows:    "1-#{result.row_count}",
                                         cols:    cols).execute
  
+=======
+                                        header:  '*',
+                                        rows:    "1-#{result.row_count}",
+                                        cols:    cols).execute
+
+>>>>>>> 5b560c25ebf1a09efb65af53b81a7665c9027f5d
   puts; puts "You can find the result in '#{outfile}'"
 end
 
@@ -81,7 +100,11 @@ def abc_analysis
 
   aggregator = Sycsvpro::Aggregator.new(infile:  infile, 
                                         outfile: "aggregate.csv", 
+<<<<<<< HEAD
                                         cols:    "46,45", 
+=======
+                                        cols:    "45", 
+>>>>>>> 5b560c25ebf1a09efb65af53b81a7665c9027f5d
                                         sum:     "Total:1,Machines")
 
   aggregator.execute
@@ -139,7 +162,11 @@ def machine_age
   infile, result, *others = params
   ages_filename = "machine-ages-#{others[0] || File.basename(infile, '.*')}.csv"
 
+<<<<<<< HEAD
   puts; print "Extracting date columns for #{infile}..."
+=======
+  puts; print "Extracting date columns from #{infile}..."
+>>>>>>> 5b560c25ebf1a09efb65af53b81a7665c9027f5d
 
   Sycsvpro::Extractor.new(infile: infile,
                           outfile: "extract.csv",
@@ -192,6 +219,52 @@ def machine_age
 
 end
 
+<<<<<<< HEAD
+=======
+# List all customers with machine count per year. Sum
+# up the machine count.
+#
+# :call-seq:
+#   sycsvpro execute machine_age.rb machine_count_per_year INFILE COUNTRY_NAME
+#
+# INFILE:: input csv-file sperated with colons (;) to operate on (see note)
+#          Note: Use the resulting file from #machine_age method invocation
+# COUNTRY_NAME:: country-identifier for the resulting files
+#
+# Result is in the file 'COUNTRY_NAME-count-per-year.csv', 
+def machine_count_per_year
+  infile, result, *others = params
+  outfile = "#{others[0] || File.basename(infile, '.*')}-count-per-year.csv"
+
+  puts; print "Determine the machine ages based on the oldest date..."
+
+  Sycsvpro::Calculator.new(infile:  infile,
+                           outfile: "calc.csv",
+                           header:  "*,Age",
+                           cols:    "#{result.col_count}:[d10,d11,d12,d84].compact.min",
+                           df:      "%d.%m.%Y").execute
+
+  puts; print "Create table with machine ages per year"
+  
+  header = "c45,BEGINc#{result.col_count}=~/(\\d{4})-\\d{2}-\\d{2}/END"
+  cols   =          "c#{result.col_count}=~/(\\d{4})-\\d{2}-\\d{2}/:+1"
+  sum    =     "BEGINc#{result.col_count}=~/(\\d{4})-\\d{2}-\\d{2}/END"
+
+  Sycsvpro::Table.new(infile:  "calc.csv",
+                      outfile: outfile,
+                      header:  header,
+                      cols:    cols,
+                      key:     "c45",
+                      sum:     "top:#{sum}",
+                      sort:    "1").execute
+  
+  clean_up(["calc.csv"])
+
+  puts; puts "You can find the result in #{outfile}"
+ 
+end
+
+>>>>>>> 5b560c25ebf1a09efb65af53b81a7665c9027f5d
 # Extracts the top customers based on machine count and age
 #
 # :call-seq:
@@ -287,8 +360,13 @@ def insert_customer_data
   Sycsvpro::Join.new(infile:        infile,
                      outfile:       outfile,
                      source:        source,
+<<<<<<< HEAD
                      cols:          "0,3;0,3",
                      joins:         "4=19;4=20",
+=======
+                     cols:          "1,2;1,2",
+                     joins:         "0=19;0=20",
+>>>>>>> 5b560c25ebf1a09efb65af53b81a7665c9027f5d
                      pos:           "20,21;23;24",
                      insert_header: "OI_EK_NAME,OI_EK_LAND;OI_AG_NAME,OI_AG_LAND").execute
 
