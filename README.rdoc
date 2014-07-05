@@ -22,14 +22,12 @@ To analyze equipment ages use #machine_age
 
     sycsvpro execute machine_age.rb machine_age country.csv country
 
-<<<<<<< HEAD
 =======
 To create a table with customer's registered machine count per year us
 #machine_count_per_year
 
     sycsvpro execute machine_age.rb machine_count_per_year country.csv country
 
->>>>>>> 5b560c25ebf1a09efb65af53b81a7665c9027f5d
 To analyze top equipment usages with more than 50 equipments 
 use #machine_count_top
 
