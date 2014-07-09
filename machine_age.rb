@@ -46,7 +46,6 @@ end
 # INFILE:: input csv-file sperated with colons (;) to operate on (EUNA downlaod)
 #
 # Result is in the file 'INFILE_BASE_NAME-clean.csv'.
-# Result is in the file 'INFILE_BASE_NAME-clean.csv'
 def clean_ib_source
   infile, result, *others = params
   outfile = "#{File.basename(infile, '.*')}-clean.csv"
@@ -62,7 +61,33 @@ def clean_ib_source
                                         header:  "*",
                                         rows:    "1-#{result.row_count}",
                                         cols:    cols).execute
-                                        header:  '*',
+
+  puts; puts "You can find the result in '#{outfile}'"
+end
+
+# Copy values from column x to column y if column y is empty
+#
+# :call-seq:
+#   sycsvpro execute machine_age.rb copy_column INFILE FROM TO
+#
+# Result is in the file 'INFILE_BASE_NAME-copy-col.csv'
+def copy_column
+  infile, result, *others = params
+  outfile = "#{File.basename(infile, '.*')}-copy-col.csv"
+
+  puts; print "Copy columns from #{others[0]} to #{others[1]} in #{infile}"
+
+  
+#  cols = "#{others[1]}:s#{others[1]},"+
+#         "#{others[1]}:s#{others[0]} if s#{others[1]}.nil?||s#{others[1]}.strip.empty?"
+
+  cols = "#{others[1]}:if s#{others[1]}.nil? || s#{others[1]}.strip.empty? then s#{others[0]} else s#{others[1]} end"
+
+  puts "cols = #{cols}"
+
+  calculator = Sycsvpro::Calculator.new(infile:  infile,
+                                        outfile: outfile,
+                                        header:  "*",
                                         rows:    "1-#{result.row_count}",
                                         cols:    cols).execute
 
@@ -200,7 +225,6 @@ def machine_age
 
 end
 
-=======
 # List all customers with machine count per year. Sum
 # up the machine count.
 #
