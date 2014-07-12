@@ -22,8 +22,7 @@ To analyze equipment ages use #machine_age
 
     sycsvpro execute machine_age.rb machine_age country.csv country
 
-=======
-To create a table with customer's registered machine count per year us
+To create a table with customer's registered machine count per year use
 #machine_count_per_year
 
     sycsvpro execute machine_age.rb machine_count_per_year country.csv country
@@ -68,6 +67,11 @@ can assign to a region abbreviation all assigned countries with
 #country_region_combination
 
     sycsvpro execute machine_age.rb country_region_combination world.csv
+
+You can copy values from one to another column if the target column is empty
+with #copy_column
+
+    sycsvpro execute machine_age.rb copy_column infile.csv from to
 
 ==RSC Analysis
 Create the analysis with #expired_rsc

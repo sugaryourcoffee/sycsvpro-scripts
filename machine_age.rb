@@ -14,9 +14,10 @@ def readme
   puts "1. Machine analysis"
   puts "-------------------"
   puts "1.0 clean_ib_source (INFILE EUNA download)"
-  puts "1.1 abc_analysis (INFILE: EUNA download)"
-  puts "1.2 machine_age (INFILE: EUNA downlaod"
-  puts "1.3 machine_count_top (INFILE: see note)"
+  puts "1.1 copy_column"
+  puts "1.2 abc_analysis (INFILE: EUNA download)"
+  puts "1.3 machine_age (INFILE: EUNA downlaod"
+  puts "1.4 machine_count_top (INFILE: see note)"
   puts "    Note: use the resulting file from 'machine_age'"
   puts
   puts "2. Spares and Repairs analysis"
@@ -37,13 +38,12 @@ def readme
   puts "    INFILE: DWH downlaod)"
 end
 
-# Clean IB source
 # Clean IB source by removing leading 0 from IDs
 #
 # :call-seq:
 #   sycsvpro execute machine_age.rb clean_ib_source INFILE
 #
-# INFILE:: input csv-file sperated with colons (;) to operate on (EUNA downlaod)
+# INFILE:: input csv-file sperated with colons (;) to operate on (EUNA download)
 #
 # Result is in the file 'INFILE_BASE_NAME-clean.csv'.
 def clean_ib_source
@@ -78,9 +78,6 @@ def copy_column
   puts; print "Copy columns from #{others[0]} to #{others[1]} in #{infile}"
 
   
-#  cols = "#{others[1]}:s#{others[1]},"+
-#         "#{others[1]}:s#{others[0]} if s#{others[1]}.nil?||s#{others[1]}.strip.empty?"
-
   cols = "#{others[1]}:if s#{others[1]}.nil? || s#{others[1]}.strip.empty? then s#{others[0]} else s#{others[1]} end"
 
   puts "cols = #{cols}"
@@ -112,7 +109,6 @@ def abc_analysis
 
   aggregator = Sycsvpro::Aggregator.new(infile:  infile, 
                                         outfile: "aggregate.csv", 
-                                        cols:    "46,45", 
                                         cols:    "45", 
                                         sum:     "Total:1,Machines")
 
@@ -171,7 +167,6 @@ def machine_age
   infile, result, *others = params
   ages_filename = "machine-ages-#{others[0] || File.basename(infile, '.*')}.csv"
 
-  puts; print "Extracting date columns for #{infile}..."
   puts; print "Extracting date columns from #{infile}..."
 
   Sycsvpro::Extractor.new(infile: infile,
@@ -231,8 +226,7 @@ end
 # :call-seq:
 #   sycsvpro execute machine_age.rb machine_count_per_year INFILE COUNTRY_NAME
 #
-# INFILE:: input csv-file sperated with colons (;) to operate on (see note)
-#          Note: Use the resulting file from #machine_age method invocation
+# INFILE:: input csv-file sperated with colons (;) to operate on (EUNA downlaod)
 # COUNTRY_NAME:: country-identifier for the resulting files
 #
 # Result is in the file 'COUNTRY_NAME-count-per-year.csv', 
@@ -475,6 +469,12 @@ def region_revenue
                                "BEGINOrders:+1 if #{order_type}.index(c1)END",
                       nf:      "DE",
                       sum:     "top:SP,RP,Total,SP-Orders,RP-Orders,Orders").execute
+
+  puts; puts "Sorting on year column"
+
+  Sycsvpro::Sorter.new(infile:  out_file_name,
+                       outfile: out_file_name,
+                       cols:    "n:0").execute
 
   puts; puts "You can find the result in #{out_file_name}"
 end
